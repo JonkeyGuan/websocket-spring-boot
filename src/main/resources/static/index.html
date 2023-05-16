@@ -1,0 +1,73 @@
+<html>
+
+<head>
+    <style>
+        #messages {
+            text-align: left;
+            width: 50%;
+            padding: 1em;
+            border: 1px solid black;
+        }
+
+        #server {
+            text-align: left;
+            width: 40%;
+        }
+    </style>
+    <title>Sample WebSocket Client</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="server">
+            <p>Server URL:</p>
+            <input id="server" value="ws://localhost:8080/socket" />
+            <button id="connect">Connect</button>
+        </div>
+        <p></p>
+        <div id="messages" class="messages"></div>
+        <div class="input-fields">
+            <p>Type a message and hit send:</p>
+            <input id="message" value="my message"/>
+            <button id="send">Send</button>
+        </div>
+    </div>
+</body>
+<script>
+    const connectButton = document.getElementById("connect");
+    const messageWindow = document.getElementById("messages");
+
+    const sendButton = document.getElementById("send");
+    const messageInput = document.getElementById("message");
+
+    var socket;
+
+    connectButton.onclick = function (event) {
+        serverUrl = document.getElementById("server").value;
+        socket = new WebSocket(serverUrl);
+
+        socket.onopen = function (event) {
+            addMessageToWindow("Connected");
+        };
+
+        socket.onmessage = function (event) {
+            addMessageToWindow(`Got Message: ${event.data}`);
+        };
+    };
+
+    sendButton.onclick = function (event) {
+        sendMessage(messageInput.value);
+    };
+
+    function sendMessage(message) {
+        socket.send(message);
+        addMessageToWindow("Sent Message: " + message);
+    }
+
+    function addMessageToWindow(message) {
+        messageWindow.innerHTML += `<div>${message}</div>`;
+    }
+
+</script>
+
+</html>
